@@ -1,0 +1,57 @@
+---
+import Section from './Section.astro';
+import { skills } from '../data/skills';
+---
+
+<Section id="skills" eyebrow="Skills" title="What I work with" tinted>
+  <div class="skill-grid">
+    {
+      skills.map((group) => (
+        <div class:list={['card', 'group', `tone-${group.tone}`]} data-reveal>
+          <h3>{group.name}</h3>
+          <ul>
+            {group.items.map((item) => (
+              <li class={`chip tone-${group.tone}`}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 20px;
+  }
+
+  .group {
+    padding: 22px 24px;
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h3::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    background: var(--tone);
+    box-shadow: inset 0 0 0 1px var(--tone-ink);
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ResumeViewer from '../components/ResumeViewer.astro';
+import { site, services } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  showBlog?: boolean;
+}
+
+const { title = `${site.shortName} | Software Engineer`, description = site.description, showBlog = false } =
+  Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(site.profilePhoto, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="robots" content="index, follow, noai, noimageai" />
+    <meta name="copyright" content={`© ${new Date().getFullYear()} ${site.name}. All rights reserved.`} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#fbf8f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15141b" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap"
+    />
+
+    <!-- Refuse to be shown inside another site's frame (clickjacking); CSP frame-ancestors
+         can't be set from a <meta> tag. Then apply the saved theme before first paint. -->
+    <script is:inline>
+      if (window.top !== window.self) {
+        try {
+          window.top.location.replace(window.self.location.href);
+        } catch {
+          document.documentElement.style.display = 'none';
+        }
+      }
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      } catch {}
+    </script>
+
+    {
+      services.goatcounterCode && (
+        <script
+          is:inline
+          async
+          data-goatcounter={`https://${services.goatcounterCode}.goatcounter.com/count`}
+          src="https://gc.zgo.at/count.v4.js"
+          integrity="sha384-nRw6qfbWyJha9LhsOtSb2YJDyZdKvvCFh0fJYlkquSFjUxp9FVNugbfy8q1jdxI+"
+          crossorigin="anonymous"
+        />
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav showBlog={showBlog} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <ResumeViewer />
+  </body>
+</html>

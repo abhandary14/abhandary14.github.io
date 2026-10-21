@@ -1,0 +1,118 @@
+---
+// In-page resume viewer. Any link with [data-resume-open] opens it; without JS, or on browsers that
+// can't show PDFs inline (most phones), the link just opens the PDF in the browser's own viewer.
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+
+<dialog class="resume-viewer" data-resume-viewer aria-labelledby="resume-viewer-title">
+  <div class="bar">
+    <h2 id="resume-viewer-title">Resume</h2>
+    <div class="bar-actions">
+      <a
+        class="btn btn-primary"
+        href={site.resume}
+        download="Aakash_Bhandary_Resume.pdf"
+        data-goatcounter-click="resume-download"
+        data-goatcounter-title="Resume downloaded (viewer)"
+      >
+        <Icon name="download" /> <span class="label">Download</span>
+      </a>
+      <a class="icon-btn" href={site.resume} target="_blank" rel="noopener" aria-label="Open in new tab">
+        <Icon name="external" size={18} />
+      </a>
+      <form method="dialog">
+        <button class="icon-btn" aria-label="Close resume"><Icon name="close" /></button>
+      </form>
+    </div>
+  </div>
+  <iframe title={`${site.shortName} resume (PDF)`} data-resume-frame></iframe>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-resume-viewer]');
+  const frame = document.querySelector<HTMLIFrameElement>('[data-resume-frame]');
+
+  // Only take over the link when the browser can render PDFs inline.
+  if (dialog && frame && navigator.pdfViewerEnabled) {
+    document.querySelectorAll<HTMLAnchorElement>('[data-resume-open]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+        event.preventDefault();
+        if (!frame.src) frame.src = `${link.getAttribute('href')}#view=FitH&navpanes=0`;
+        dialog.showModal();
+      });
+    });
+
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+</script>
+
+<style>
+  .resume-viewer {
+    width: min(960px, calc(100vw - 32px));
+    height: calc(100vh - 32px);
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  .resume-viewer[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .resume-viewer::backdrop {
+    background: rgb(15 13 22 / 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px 10px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+  }
+
+  .bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bar-actions form {
+    display: contents;
+  }
+
+  .bar-actions .btn {
+    padding: 8px 16px;
+  }
+
+  iframe {
+    flex: 1;
+    width: 100%;
+    border: 0;
+    background: var(--surface-2);
+  }
+
+  @media (max-width: 520px) {
+    .bar-actions .label {
+      display: none;
+    }
+  }
+</style>

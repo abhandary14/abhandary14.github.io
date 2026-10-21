@@ -1,0 +1,216 @@
+---
+import Section from './Section.astro';
+import Icon from './Icon.astro';
+import { publications } from '../data/publications';
+---
+
+<Section id="publications" eyebrow="Research" title="Publications">
+  <ol class="pubs">
+    {
+      publications.map((pub) => (
+        <li class:list={['card', 'pub', { awarded: pub.award }]} data-reveal>
+          <div class="pub-text">
+            {pub.award && (
+              <p class="award chip tone-peach">
+                <Icon name="award" size={15} /> {pub.award.title} · {pub.award.detail}
+              </p>
+            )}
+            <h3>
+              <a href={pub.href} target="_blank" rel="noopener">
+                {pub.title}
+              </a>
+            </h3>
+            <p class="authors">{pub.authors}</p>
+            <p class="venue">
+              <em>{pub.venue}</em>, {pub.year}
+            </p>
+            <a class="read" href={pub.href} target="_blank" rel="noopener">
+              Read on IEEE Xplore <Icon name="external" size={15} />
+            </a>
+          </div>
+
+          {pub.award && (
+            <button
+              class="thumb"
+              type="button"
+              data-lightbox-src={pub.award.image}
+              data-lightbox-alt={pub.award.imageAlt}
+              aria-label={`View ${pub.award.title} certificate full size`}
+            >
+              <img src={pub.award.image} alt={pub.award.imageAlt} loading="lazy" />
+              <span class="thumb-hint">View certificate</span>
+            </button>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+
+  <dialog class="lightbox" data-lightbox aria-label="Certificate">
+    <form method="dialog">
+      <button class="icon-btn close" aria-label="Close"><Icon name="close" /></button>
+    </form>
+    <img data-lightbox-img alt="" />
+  </dialog>
+</Section>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const image = document.querySelector<HTMLImageElement>('[data-lightbox-img]');
+
+  document.querySelectorAll<HTMLButtonElement>('[data-lightbox-src]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (!dialog || !image) return;
+      image.src = button.dataset.lightboxSrc ?? '';
+      image.alt = button.dataset.lightboxAlt ?? '';
+      dialog.showModal();
+    });
+  });
+
+  // Close when clicking the backdrop.
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+</script>
+
+<style>
+  .pubs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 20px;
+  }
+
+  .pub {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 26px;
+    align-items: center;
+  }
+
+  .pub.awarded {
+    grid-template-columns: 1fr minmax(180px, 260px);
+    border-color: color-mix(in srgb, var(--peach-ink) 35%, var(--border));
+  }
+
+  .award {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    line-height: 1.35;
+  }
+
+  h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  h3 a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .authors {
+    margin-top: 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .venue {
+    margin-top: 4px;
+    font-size: 0.95rem;
+  }
+
+  .read {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    font-weight: 600;
+    font-size: 0.93rem;
+    text-decoration: none;
+  }
+
+  .read:hover {
+    text-decoration: underline;
+  }
+
+  .thumb {
+    position: relative;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #fff;
+    cursor: zoom-in;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .thumb:hover {
+    transform: rotate(-1deg) scale(1.02);
+    box-shadow: var(--shadow);
+  }
+
+  .thumb img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .thumb-hint {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgb(20 18 28 / 0.75);
+    color: #fff;
+  }
+
+  .lightbox {
+    width: min(1100px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: auto;
+  }
+
+  .lightbox::backdrop {
+    background: rgb(15 13 22 / 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  .lightbox img {
+    width: 100%;
+    height: auto;
+  }
+
+  .lightbox .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+  }
+
+  @media (max-width: 700px) {
+    .pub.awarded {
+      grid-template-columns: 1fr;
+    }
+
+    .pub {
+      padding: 20px;
+    }
+  }
+</style>

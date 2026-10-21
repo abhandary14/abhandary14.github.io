@@ -1,0 +1,153 @@
+---
+import Icon from './Icon.astro';
+import type { Project } from '../data/projects';
+import { emphasize } from '../lib/format';
+
+interface Props {
+  project: Project;
+  tone: string;
+}
+
+const { project, tone } = Astro.props;
+---
+
+<article class:list={['card', 'project', tone]} data-reveal>
+  {
+    project.image && (
+      <div class="media">
+        <img src={project.image.src} alt={project.image.alt} loading="lazy" />
+      </div>
+    )
+  }
+  <div class="body">
+    {project.kind && <p class="kind">{project.kind}</p>}
+    <h3>{project.title}</h3>
+    {project.summary && <p class="summary">{project.summary}</p>}
+
+    {
+      project.bullets.length > 0 && (
+        <ul class="bullets">
+          {project.bullets.map((bullet) => (
+            <li set:html={emphasize(bullet)} />
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      project.tags.length > 0 && (
+        <ul class="tags" aria-label="Technologies">
+          {project.tags.map((tag) => (
+            <li class="chip">{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      project.links.length > 0 && (
+        <div class="links">
+          {project.links.map((link) => (
+            <a href={link.href} target="_blank" rel="noopener">
+              {link.label === 'GitHub' ? <Icon name="github" size={16} /> : <Icon name="external" size={16} />}
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .project {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+
+  .project:hover {
+    transform: translateY(-3px);
+    border-color: var(--tone-ink);
+  }
+
+  .media {
+    aspect-ratio: 16 / 9;
+    background: var(--tone);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    flex: 1;
+    border-top: 6px solid var(--tone);
+  }
+
+  .media + .body {
+    border-top: 0;
+  }
+
+  .kind {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tone-ink);
+    margin-bottom: -8px;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  .summary {
+    color: var(--text);
+  }
+
+  .bullets {
+    font-size: 0.97rem;
+  }
+
+  .tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tags .chip {
+    background: var(--tone);
+    color: var(--tone-ink);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 0.93rem;
+    text-decoration: none;
+  }
+
+  .links a:hover {
+    text-decoration: underline;
+  }
+</style>

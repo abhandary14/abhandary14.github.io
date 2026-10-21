@@ -1,0 +1,90 @@
+---
+import Icon from './Icon.astro';
+---
+
+<button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode" data-theme-toggle>
+  <span class="theme-icon theme-icon-moon"><Icon name="moon" /></span>
+  <span class="theme-icon theme-icon-sun"><Icon name="sun" /></span>
+</button>
+
+<script>
+  const root = document.documentElement;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : media.matches);
+
+  const sync = () => {
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+      button.setAttribute('aria-pressed', String(isDark()));
+    });
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = isDark() ? 'light' : 'dark';
+      // Back to "follow the system" when the choice matches it.
+      if ((next === 'dark') === media.matches) {
+        delete root.dataset.theme;
+        try {
+          localStorage.removeItem('theme');
+        } catch {}
+      } else {
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem('theme', next);
+        } catch {}
+      }
+      sync();
+    });
+  });
+
+  media.addEventListener('change', sync);
+  sync();
+</script>
+
+<style is:global>
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .icon-btn:hover {
+    border-color: var(--accent);
+  }
+
+  .theme-icon {
+    display: inline-flex;
+  }
+
+  /* Show the moon in light mode (switch to dark) and the sun in dark mode. */
+  .theme-icon-sun {
+    display: none;
+  }
+
+  :root[data-theme='dark'] .theme-icon-sun {
+    display: inline-flex;
+  }
+
+  :root[data-theme='dark'] .theme-icon-moon {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .theme-icon-sun {
+      display: inline-flex;
+    }
+
+    :root:not([data-theme='light']) .theme-icon-moon {
+      display: none;
+    }
+  }
+</style>

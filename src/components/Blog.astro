@@ -1,0 +1,71 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Section from './Section.astro';
+import { formatDate } from '../lib/blog';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+<Section id="blog" eyebrow="Writing" title="Blog">
+  <div class="post-grid">
+    {
+      posts.map((post) => (
+        <a class="card post" href={`/blog/${post.id}/`} data-reveal>
+          <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+          <h3>{post.data.title}</h3>
+          <p>{post.data.description}</p>
+          <span class="more">Read post →</span>
+        </a>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 20px;
+  }
+
+  .post {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px 24px;
+    color: var(--text);
+    text-decoration: none;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+
+  .post:hover {
+    color: var(--text);
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+
+  time {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  h3 {
+    font-size: 1.15rem;
+  }
+
+  p {
+    color: var(--text-muted);
+  }
+
+  .more {
+    margin-top: auto;
+    padding-top: 6px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.93rem;
+  }
+</style>

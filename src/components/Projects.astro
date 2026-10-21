@@ -1,0 +1,21 @@
+---
+import Section from './Section.astro';
+import ProjectCard from './ProjectCard.astro';
+import { projects } from '../data/projects';
+
+const tones = ['tone-lavender', 'tone-mint', 'tone-peach', 'tone-sky', 'tone-pink'];
+---
+
+<Section id="projects" eyebrow="Projects" title="Featured Projects" tinted>
+  <div class="project-grid">
+    {projects.map((project, index) => <ProjectCard project={project} tone={tones[index % tones.length]} />)}
+  </div>
+</Section>
+
+<style>
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 20px;
+  }
+</style>

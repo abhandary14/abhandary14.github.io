@@ -1,0 +1,17 @@
+# Search engines are welcome so recruiters can find this site.
+User-agent: *
+Allow: /
+
+# Opt out of AI model training crawlers. (Compliance is voluntary on the crawler's side.)
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: Bytespider
+User-agent: meta-externalagent
+User-agent: Diffbot
+User-agent: cohere-training-data-crawler
+User-agent: Omgilibot
+Disallow: /

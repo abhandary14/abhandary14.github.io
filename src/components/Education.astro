@@ -1,0 +1,110 @@
+---
+import Section from './Section.astro';
+import { education } from '../data/education';
+
+const tones = ['tone-lavender', 'tone-mint'];
+---
+
+<Section id="education" eyebrow="Education" title="Where I studied" tinted>
+  <div class="edu-grid">
+    {
+      education.map((item, index) => (
+        <article class:list={['card', 'edu', tones[index % tones.length]]} data-reveal>
+          <p class="dates">{item.dates}</p>
+          <h3>{item.degree}</h3>
+          <p class="school">
+            {item.school} · <span>{item.location}</span>
+          </p>
+          <p class="gpa">
+            <span class="chip">GPA {item.gpa}</span>
+            {item.note && <span class="chip tone-peach">{item.note}</span>}
+          </p>
+          <p class="label">Coursework</p>
+          <ul class="coursework">
+            {item.coursework.map((course) => (
+              <li>{course}</li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .edu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    gap: 20px;
+  }
+
+  .edu {
+    position: relative;
+    padding: 28px;
+    overflow: hidden;
+  }
+
+  .edu::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 6px;
+    background: var(--tone);
+  }
+
+  .dates {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  h3 {
+    margin-top: 6px;
+    font-size: 1.25rem;
+  }
+
+  .school {
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  .school span {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .gpa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .gpa .chip:first-child {
+    background: var(--tone);
+    color: var(--tone-ink);
+  }
+
+  .label {
+    margin-top: 18px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .coursework {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-top: 6px;
+    font-size: 0.95rem;
+  }
+
+  .coursework li:not(:last-child)::after {
+    content: '·';
+    margin-left: 14px;
+    color: var(--text-muted);
+  }
+</style>

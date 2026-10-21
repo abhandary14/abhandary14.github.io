@@ -1,0 +1,24 @@
+---
+import Section from './Section.astro';
+import { about } from '../data/site';
+---
+
+<Section id="about" eyebrow="About" title="A bit about me">
+  <div class="about" data-reveal>
+    {about.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</Section>
+
+<style>
+  .about {
+    display: grid;
+    gap: 16px;
+    max-width: 68ch;
+    font-size: 1.12rem;
+    color: var(--text-muted);
+  }
+
+  .about p:first-child {
+    color: var(--text);
+  }
+</style>

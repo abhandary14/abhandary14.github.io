@@ -1,0 +1,236 @@
+---
+import Icon from './Icon.astro';
+import { site, socials } from '../data/site';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="blobs" aria-hidden="true">
+    <span class="blob blob-1" data-blob></span>
+    <span class="blob blob-2" data-blob></span>
+    <span class="blob blob-3" data-blob></span>
+  </div>
+
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="hello" data-hero>Hi, I'm</p>
+      <h1 id="hero-title" data-hero>{site.name}</h1>
+      <p class="tagline" data-hero>{site.tagline}.</p>
+
+      <ul class="meta" data-hero>
+        <li class="chip tone-mint"><span class="dot" aria-hidden="true"></span>{site.availability}</li>
+        <li class="chip tone-peach">
+          <Icon name="map-pin" size={14} /> Current location: {site.location}
+        </li>
+        <li class="chip tone-sky">{site.openTo}</li>
+      </ul>
+
+      <div class="actions" data-hero>
+        <a
+          class="btn btn-primary"
+          href={site.resume}
+          target="_blank"
+          rel="noopener"
+          data-resume-open
+          data-goatcounter-click="resume-view"
+          data-goatcounter-title="Resume viewed (hero)"
+        >
+          View resume
+        </a>
+        <a
+          class="btn btn-ghost"
+          href={site.resume}
+          download="Aakash_Bhandary_Resume.pdf"
+          data-goatcounter-click="resume-download"
+          data-goatcounter-title="Resume downloaded (hero)"
+        >
+          <Icon name="download" /> Download
+        </a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+
+      <ul class="socials" data-hero>
+        {
+          socials.map((social) => (
+            <li>
+              <a
+                class="icon-btn"
+                href={social.href}
+                aria-label={social.label}
+                target={social.icon === 'mail' ? undefined : '_blank'}
+                rel="noopener"
+              >
+                <Icon name={social.icon} size={18} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="portrait" data-hero-photo>
+      <div class="portrait-ring" aria-hidden="true"></div>
+      <img src={site.profilePhoto} alt={`Portrait of ${site.shortName}`} width="360" height="360" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(48px, 9vw, 120px) clamp(56px, 9vw, 112px);
+  }
+
+  .blobs {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+  }
+
+  .blob-1 {
+    width: 380px;
+    height: 380px;
+    background: var(--lavender);
+    top: -80px;
+    right: 8%;
+  }
+
+  .blob-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--mint);
+    bottom: -60px;
+    left: -40px;
+  }
+
+  .blob-3 {
+    width: 240px;
+    height: 240px;
+    background: var(--peach);
+    top: 40%;
+    right: 35%;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    align-items: center;
+    gap: clamp(32px, 6vw, 72px);
+  }
+
+  .hello {
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 6.2vw, 4.2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  .tagline {
+    margin-top: 18px;
+    font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+    color: var(--text-muted);
+    max-width: 34ch;
+  }
+
+  .meta {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .meta .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot {
+      animation: none;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .socials {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .portrait {
+    position: relative;
+    justify-self: center;
+    width: min(100%, 340px);
+    aspect-ratio: 1;
+  }
+
+  .portrait-ring {
+    position: absolute;
+    inset: -14px;
+    border-radius: 50%;
+    background: conic-gradient(from 120deg, var(--lavender), var(--mint), var(--peach), var(--pink), var(--lavender));
+  }
+
+  .portrait img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 6px solid var(--bg);
+  }
+
+  @media (max-width: 760px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+    }
+
+    .portrait {
+      order: -1;
+      width: min(60vw, 220px);
+      justify-self: start;
+      margin-left: 14px;
+      margin-top: 14px;
+    }
+  }
+</style>
