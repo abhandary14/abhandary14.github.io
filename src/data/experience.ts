@@ -7,6 +7,7 @@ export interface Experience {
   logo?: string;
   location: string;
   dates: string;
+  stack: string[];
   bullets: string[];
 }
 
@@ -17,6 +18,7 @@ export const experience: Experience[] = [
     logo: '/assets/future_world_alliance_logo.jpg',
     location: 'Raleigh, NC (Remote)',
     dates: 'Sep 2026 – Present',
+    stack: ['Python', 'FastAPI', 'PostgreSQL', 'Docker', 'GitHub Actions'],
     bullets: [
       'Developed a **Python** and **FastAPI** service that turns paid course enrollments into learner accounts and onboarding emails.',
       'Engineered a retry-enabled **PostgreSQL** job queue and load tested it with **1,000** enrollments across 3 workers, finishing in 13.7 seconds with zero duplicates.',
@@ -30,6 +32,7 @@ export const experience: Experience[] = [
     logo: '/assets/aeon_software_pvt_ltd_logo.jpg',
     location: 'Gandhinagar, India (Remote)',
     dates: 'May – Jul 2023 · Part-time',
+    stack: ['Python', 'PySpark', 'Flask', 'AWS EC2', 'Docker', 'Power BI', 'SQL'],
     bullets: [
       'Engineered a **Python** pipeline using **PySpark** to process a **4M+** record transportation systems dataset, replacing a pandas-based approach that repeatedly crashed the environment from memory exhaustion.',
       'Deployed a Python forecasting model with 95.93% R² score as a **Flask API** on AWS **EC2** using Docker, creating a reusable internal tool to support the company’s future needs.',
@@ -42,6 +45,7 @@ export const experience: Experience[] = [
     logo: '/assets/einfochips_logo.jpg',
     location: 'Gandhinagar, India (Remote)',
     dates: 'May – Jun 2023 · Part-time',
+    stack: ['PHP', 'JavaScript', 'MySQL', 'GitHub Actions', 'AWS'],
     bullets: [
       'Developed product listing and user cart pages for a client eCommerce site using PHP, **JavaScript**, HTML5/CSS3, and **MySQL**, supporting product browsing and cart management.',
       'Led weekly client meetings to gather requirements and turn feedback into technical specifications, and coordinate development priorities, contributing to project delivery one week ahead of schedule.',

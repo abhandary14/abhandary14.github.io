@@ -13,7 +13,12 @@ export type IconName =
   | 'close'
   | 'map-pin'
   | 'award'
-  | 'send';
+  | 'send'
+  | 'tennis'
+  | 'clock'
+  | 'arrow-right'
+  | 'graduation'
+  | 'image';
 
 interface Props {
   name: IconName;
@@ -111,6 +116,41 @@ const { name, size = 20 } = Astro.props;
       <>
         <circle cx="12" cy="9" r="6" />
         <path d="m8.5 14 -1.5 8 5-3 5 3-1.5-8" />
+      </>
+    )
+  }
+  {
+    name === 'tennis' && (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M5.6 5.6a9 9 0 0 1 0 12.8" />
+        <path d="M18.4 5.6a9 9 0 0 0 0 12.8" />
+      </>
+    )
+  }
+  {
+    name === 'clock' && (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </>
+    )
+  }
+  {name === 'arrow-right' && <path d="M5 12h14M13 6l6 6-6 6" />}
+  {
+    name === 'graduation' && (
+      <>
+        <path d="M2 9l10-5 10 5-10 5L2 9Z" />
+        <path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5" />
+      </>
+    )
+  }
+  {
+    name === 'image' && (
+      <>
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <circle cx="9" cy="10" r="2" />
+        <path d="m21 16-5-5-9 9" />
       </>
     )
   }

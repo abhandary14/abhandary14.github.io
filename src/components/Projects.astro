@@ -2,20 +2,48 @@
 import Section from './Section.astro';
 import ProjectCard from './ProjectCard.astro';
 import { projects } from '../data/projects';
+import { getPublishedWriteups } from '../lib/projects';
 
-const tones = ['tone-lavender', 'tone-mint', 'tone-peach', 'tone-sky', 'tone-pink'];
+const writeups = await getPublishedWriteups();
+const tones = ['tone-green', 'tone-pink', 'tone-orange'];
 ---
 
-<Section id="projects" eyebrow="Projects" title="Featured Projects" tinted>
+<Section id="projects" eyebrow="Projects" title="Featured Projects">
   <div class="project-grid">
-    {projects.map((project, index) => <ProjectCard project={project} tone={tones[index % tones.length]} />)}
+    {
+      projects.map((project, index) => (
+        <ProjectCard
+          title={project.title}
+          kind={project.kind}
+          summary={project.summary}
+          tags={project.tags}
+          screenshots={project.screenshots}
+          repo={project.repo}
+          links={project.links}
+          tone={tones[index % tones.length]}
+        />
+      ))
+    }
+    {
+      writeups.map((entry, index) => (
+        <ProjectCard
+          title={entry.data.title}
+          kind={entry.data.kind}
+          summary={entry.data.summary}
+          tags={entry.data.stack}
+          screenshots={entry.data.cover ? [entry.data.cover] : []}
+          writeup={`/projects/${entry.id}/`}
+          tone={tones[(projects.length + index) % tones.length]}
+        />
+      ))
+    }
   </div>
 </Section>
 
 <style>
   .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+    gap: var(--gap);
   }
 </style>

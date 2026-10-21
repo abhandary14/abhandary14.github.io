@@ -1,11 +1,15 @@
 ---
 import Section from './Section.astro';
+import Icon from './Icon.astro';
 import { about } from '../data/site';
 ---
 
 <Section id="about" eyebrow="About" title="A bit about me">
-  <div class="about" data-reveal>
+  <div class="tile about" data-reveal>
     {about.map((paragraph) => <p>{paragraph}</p>)}
+    <button class="btn btn-ghost journey-btn" type="button" data-journey-open>
+      See my journey <Icon name="arrow-right" size={16} />
+    </button>
   </div>
 </Section>
 
@@ -13,12 +17,21 @@ import { about } from '../data/site';
   .about {
     display: grid;
     gap: 16px;
-    max-width: 68ch;
-    font-size: 1.12rem;
+    font-size: clamp(1.08rem, 1.6vw, 1.25rem);
+    line-height: 1.6;
     color: var(--text-muted);
+  }
+
+  .about p {
+    max-width: 62ch;
   }
 
   .about p:first-child {
     color: var(--text);
+  }
+
+  .journey-btn {
+    justify-self: start;
+    margin-top: 4px;
   }
 </style>

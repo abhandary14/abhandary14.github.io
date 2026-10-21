@@ -14,7 +14,7 @@ const { posts } = Astro.props;
   <div class="post-grid">
     {
       posts.map((post) => (
-        <a class="card post" href={`/blog/${post.id}/`} data-reveal>
+        <a class="tile post" href={`/blog/${post.id}/`} data-reveal>
           <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
           <h3>{post.data.title}</h3>
           <p>{post.data.description}</p>
@@ -45,7 +45,7 @@ const { posts } = Astro.props;
   .post:hover {
     color: var(--text);
     transform: translateY(-3px);
-    border-color: var(--accent);
+    border-color: var(--text);
   }
 
   time {
@@ -64,7 +64,7 @@ const { posts } = Astro.props;
   .more {
     margin-top: auto;
     padding-top: 6px;
-    color: var(--accent);
+    color: var(--text);
     font-weight: 600;
     font-size: 0.93rem;
   }

@@ -1,19 +1,19 @@
 ---
 // Shared wrapper that gives every section the same heading style and spacing.
+// The heading sits on a solid patch so the dot grid never runs behind text.
 interface Props {
   id: string;
   eyebrow: string;
   title: string;
-  tinted?: boolean;
 }
 
-const { id, eyebrow, title, tinted = false } = Astro.props;
+const { id, eyebrow, title } = Astro.props;
 ---
 
-<section id={id} class:list={['section', { tinted }]} aria-labelledby={`${id}-title`}>
+<section id={id} class="section" aria-labelledby={`${id}-title`}>
   <div class="container">
     <header class="section-head" data-reveal>
-      <p class="eyebrow">{eyebrow}</p>
+      <p class="label">{eyebrow}</p>
       <h2 id={`${id}-title`}>{title}</h2>
     </header>
     <slot />
@@ -22,30 +22,24 @@ const { id, eyebrow, title, tinted = false } = Astro.props;
 
 <style>
   .section {
-    padding-block: clamp(64px, 10vw, 112px);
-  }
-
-  .section.tinted {
-    background: var(--bg-tint);
+    padding-block: clamp(36px, 5vw, 64px);
   }
 
   .section-head {
-    margin-bottom: clamp(28px, 4vw, 44px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: clamp(20px, 3vw, 32px);
   }
 
-  .eyebrow {
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
+  .section-head > * {
+    background: var(--bg);
+    box-shadow: 0 0 0 8px var(--bg);
   }
 
   h2 {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(1.9rem, 4vw, 2.6rem);
-    letter-spacing: -0.01em;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    letter-spacing: -0.03em;
   }
 </style>

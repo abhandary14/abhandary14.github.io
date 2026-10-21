@@ -17,12 +17,13 @@ npm run build    # type-check + build to dist/
 | Name, tagline, About text, social links, service keys | `src/data/site.ts` |
 | Education | `src/data/education.ts` |
 | Experience | `src/data/experience.ts` |
-| Featured projects (copy an entry to add one) | `src/data/projects.ts` |
+| Featured projects with a GitHub repo (copy an entry to add one) | `src/data/projects.ts` |
+| Academic project write-ups (own page each) | `src/content/projects/*.md` (see `_template.md`) |
 | Publications | `src/data/publications.ts` |
 | Skills | `src/data/skills.ts` |
 | Blog posts | `src/content/blog/*.md` (see `_example-post.md`) |
 | Images, resume PDF | `public/` |
-| Colors and fonts | `src/styles/global.css` |
+| Colors, fonts and the dot grid | `src/styles/global.css` |
 | Animations | `src/scripts/animations.ts` |
 
 The Blog section and its nav link show up automatically once one post without `draft: true` exists.

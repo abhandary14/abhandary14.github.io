@@ -1,0 +1,139 @@
+---
+// Academic project write-up page, built from src/content/projects/<slug>.md.
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { getPublishedWriteups } from '../../lib/projects';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const entries = await getPublishedWriteups();
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={`${entry.data.title} | ${site.shortName}`} description={entry.data.summary}>
+  <article class="container writeup">
+    <a class="back" href="/#projects"><Icon name="arrow-right" size={16} /> All projects</a>
+
+    <header class="tile head">
+      <p class="label">{entry.data.kind}{entry.data.context && ` · ${entry.data.context}`}</p>
+      <h1>{entry.data.title}</h1>
+      <p class="summary">{entry.data.summary}</p>
+      {
+        entry.data.stack.length > 0 && (
+          <>
+            <p class="label">Tech stack</p>
+            <ul class="chip-list">
+              {entry.data.stack.map((item) => (
+                <li class="chip">{item}</li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+    </header>
+
+    {
+      entry.data.cover && (
+        <figure class="tile cover">
+          <img src={entry.data.cover.src} alt={entry.data.cover.alt} />
+        </figure>
+      )
+    }
+
+    <div class="tile prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .writeup {
+    max-width: 860px;
+    display: grid;
+    gap: var(--gap);
+    padding-block: 32px 96px;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    font-weight: 500;
+    text-decoration: none;
+    background: var(--bg);
+    box-shadow: 0 0 0 8px var(--bg);
+  }
+
+  .back :global(svg) {
+    transform: rotate(180deg);
+  }
+
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.035em;
+  }
+
+  .summary {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 60ch;
+    margin-bottom: 8px;
+  }
+
+  .cover {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .prose {
+    font-size: 1.05rem;
+  }
+
+  .prose :global(h2) {
+    font-size: 1.4rem;
+    margin-block: 1.8em 0.6em;
+  }
+
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .prose :global(:is(p, ul, ol, pre, blockquote)) {
+    margin-block: 0 1em;
+    max-width: 68ch;
+  }
+
+  .prose :global(:is(ul, ol)) {
+    padding-left: 1.3em;
+  }
+
+  .prose :global(pre) {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
+
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  .prose :global(img) {
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+</style>

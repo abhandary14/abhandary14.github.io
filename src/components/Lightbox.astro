@@ -1,0 +1,59 @@
+---
+// Shared full-size image viewer. Any button with data-lightbox-src="<url>" (and optional
+// data-lightbox-alt) opens it.
+import Icon from './Icon.astro';
+---
+
+<dialog class="lightbox" data-lightbox aria-label="Image viewer">
+  <form method="dialog">
+    <button class="icon-btn close" aria-label="Close"><Icon name="close" /></button>
+  </form>
+  <img data-lightbox-img alt="" />
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const image = document.querySelector<HTMLImageElement>('[data-lightbox-img]');
+
+  document.addEventListener('click', (event) => {
+    const trigger = (event.target as HTMLElement).closest<HTMLElement>('[data-lightbox-src]');
+    if (!trigger || !dialog || !image) return;
+    image.src = trigger.dataset.lightboxSrc ?? '';
+    image.alt = trigger.dataset.lightboxAlt ?? '';
+    dialog.showModal();
+  });
+
+  // Close when clicking the backdrop.
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+</script>
+
+<style>
+  .lightbox {
+    width: min(1100px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: auto;
+  }
+
+  .lightbox::backdrop {
+    background: rgb(0 0 0 / 0.72);
+    backdrop-filter: blur(4px);
+  }
+
+  .lightbox img {
+    width: 100%;
+    height: auto;
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+  }
+</style>

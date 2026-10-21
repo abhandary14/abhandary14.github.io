@@ -1,61 +1,102 @@
 ---
+// One card in the Featured Projects grid. Used for GitHub projects (data/projects.ts)
+// and academic write-ups (content/projects/*.md).
 import Icon from './Icon.astro';
-import type { Project } from '../data/projects';
-import { emphasize } from '../lib/format';
+import type { ProjectImage, ProjectLink } from '../data/projects';
 
 interface Props {
-  project: Project;
+  title: string;
+  kind: string;
+  summary: string;
+  tags: string[];
   tone: string;
+  screenshots?: ProjectImage[];
+  repo?: string;
+  writeup?: string; // link to the project's own page
+  links?: ProjectLink[];
 }
 
-const { project, tone } = Astro.props;
+const { title, kind, summary, tags, tone, screenshots = [], repo, writeup, links = [] } = Astro.props;
+const [cover, ...rest] = screenshots;
+const gallery = screenshots.slice(0, 3);
+const initials = title
+  .split(/\s+/)
+  .slice(0, 2)
+  .map((word) => word.charAt(0).toUpperCase())
+  .join('');
 ---
 
-<article class:list={['card', 'project', tone]} data-reveal>
-  {
-    project.image && (
-      <div class="media">
-        <img src={project.image.src} alt={project.image.alt} loading="lazy" />
-      </div>
-    )
-  }
-  <div class="body">
-    {project.kind && <p class="kind">{project.kind}</p>}
-    <h3>{project.title}</h3>
-    {project.summary && <p class="summary">{project.summary}</p>}
-
+<article class:list={['tile', 'project', tone]} data-reveal data-tilt>
+  <div class="media">
     {
-      project.bullets.length > 0 && (
-        <ul class="bullets">
-          {project.bullets.map((bullet) => (
-            <li set:html={emphasize(bullet)} />
-          ))}
-        </ul>
+      cover ? (
+        <button class="cover" type="button" data-lightbox-src={cover.src} data-lightbox-alt={cover.alt} aria-label={`View screenshot: ${cover.alt}`}>
+          <img src={cover.src} alt={cover.alt} loading="lazy" />
+        </button>
+      ) : (
+        <div class="placeholder" aria-hidden="true">
+          <span class="mono">{initials}</span>
+        </div>
       )
     }
+  </div>
+
+  {
+    rest.length > 0 && (
+      <ul class="thumbs" aria-label="More screenshots">
+        {gallery.slice(1).map((shot) => (
+          <li>
+            <button type="button" data-lightbox-src={shot.src} data-lightbox-alt={shot.alt} aria-label={`View screenshot: ${shot.alt}`}>
+              <img src={shot.src} alt="" loading="lazy" />
+            </button>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="body">
+    <p class="label">{kind}</p>
+    <h3>{title}</h3>
+    <p class="summary">{summary}</p>
 
     {
-      project.tags.length > 0 && (
-        <ul class="tags" aria-label="Technologies">
-          {project.tags.map((tag) => (
+      tags.length > 0 && (
+        <ul class="chip-list" aria-label="Tech stack">
+          {tags.map((tag) => (
             <li class="chip">{tag}</li>
           ))}
         </ul>
       )
     }
 
-    {
-      project.links.length > 0 && (
-        <div class="links">
-          {project.links.map((link) => (
-            <a href={link.href} target="_blank" rel="noopener">
-              {link.label === 'GitHub' ? <Icon name="github" size={16} /> : <Icon name="external" size={16} />}
-              {link.label}
-            </a>
-          ))}
-        </div>
-      )
-    }
+    <div class="actions">
+      {
+        repo && (
+          <a class="btn btn-ghost" href={repo} target="_blank" rel="noopener">
+            <Icon name="github" size={16} /> Read more on GitHub
+          </a>
+        )
+      }
+      {
+        writeup && (
+          <a class="btn btn-ghost" href={writeup}>
+            Read the write-up <Icon name="arrow-right" size={16} />
+          </a>
+        )
+      }
+      {
+        links.length > 0 && (
+          <div class="links">
+            {links.map((link) => (
+              <a href={link.href} target="_blank" rel="noopener">
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
   </div>
 </article>
 
@@ -63,22 +104,75 @@ const { project, tone } = Astro.props;
   .project {
     display: flex;
     flex-direction: column;
+    padding: 0;
     overflow: hidden;
-    transition: transform 0.25s ease, border-color 0.25s ease;
   }
 
   .project:hover {
-    transform: translateY(-3px);
-    border-color: var(--tone-ink);
+    box-shadow: var(--shadow-hover);
   }
 
   .media {
-    aspect-ratio: 16 / 9;
-    background: var(--tone);
+    aspect-ratio: 16 / 10;
     border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
   }
 
-  .media img {
+  .cover {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    cursor: zoom-in;
+    background: none;
+  }
+
+  .cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Until screenshots exist: a tinted dot pattern with the project's initials. */
+  .placeholder {
+    position: relative;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle, rgb(0 0 0 / 0.16) 1.2px, transparent 1.8px) 0 0 / 16px 16px,
+      var(--tone);
+  }
+
+  .placeholder span {
+    font-size: clamp(2.4rem, 5vw, 3.4rem);
+    font-weight: 500;
+    color: var(--on-accent);
+    background: var(--tone);
+    padding: 0 12px;
+  }
+
+  .thumbs {
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px 0;
+  }
+
+  .thumbs button {
+    display: block;
+    width: 72px;
+    aspect-ratio: 16 / 10;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: zoom-in;
+    background: none;
+  }
+
+  .thumbs img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -87,23 +181,9 @@ const { project, tone } = Astro.props;
   .body {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    padding: 24px;
+    gap: 10px;
     flex: 1;
-    border-top: 6px solid var(--tone);
-  }
-
-  .media + .body {
-    border-top: 0;
-  }
-
-  .kind {
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--tone-ink);
-    margin-bottom: -8px;
+    padding: clamp(20px, 2.4vw, 24px);
   }
 
   h3 {
@@ -111,43 +191,29 @@ const { project, tone } = Astro.props;
   }
 
   .summary {
-    color: var(--text);
+    color: var(--text-muted);
   }
 
-  .bullets {
-    font-size: 0.97rem;
-  }
-
-  .tags {
-    list-style: none;
+  .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    align-items: center;
+    gap: 10px 16px;
+    margin-top: auto;
+    padding-top: 8px;
   }
 
-  .tags .chip {
-    background: var(--tone);
-    color: var(--tone-ink);
+  .actions .btn {
+    min-height: 40px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 
   .links {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 18px;
-    margin-top: auto;
-    padding-top: 4px;
-  }
-
-  .links a {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 600;
+    gap: 6px 14px;
+    font-weight: 500;
     font-size: 0.93rem;
-    text-decoration: none;
-  }
-
-  .links a:hover {
-    text-decoration: underline;
   }
 </style>

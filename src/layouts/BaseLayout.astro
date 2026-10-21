@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ResumeViewer from '../components/ResumeViewer.astro';
+import Lightbox from '../components/Lightbox.astro';
 import { site, services } from '../data/site';
 
 interface Props {
@@ -29,8 +30,8 @@ const ogImage = new URL(site.profilePhoto, Astro.site);
     <meta name="copyright" content={`© ${new Date().getFullYear()} ${site.name}. All rights reserved.`} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#fbf8f4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#15141b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
@@ -43,7 +44,7 @@ const ogImage = new URL(site.profilePhoto, Astro.site);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Cascadia+Code:wght@400;500&display=swap"
     />
 
     <!-- Refuse to be shown inside another site's frame (clickjacking); CSP frame-ancestors
@@ -83,5 +84,6 @@ const ogImage = new URL(site.profilePhoto, Astro.site);
     </main>
     <Footer />
     <ResumeViewer />
+    <Lightbox />
   </body>
 </html>

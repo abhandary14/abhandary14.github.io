@@ -12,6 +12,8 @@ export const site = {
   profilePhoto: '/assets/profile.jpeg',
   description:
     'Aakash Bhandary is a software engineer and NC State computer science graduate building reliable backend and AI systems.',
+  timeZone: 'America/New_York',
+  offTheClock: 'Getting better at tennis',
 };
 
 // About section. TODO: replace these paragraphs with your own words.

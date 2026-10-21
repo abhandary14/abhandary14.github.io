@@ -22,9 +22,9 @@ const links = [
 ---
 
 <header class="site-header" data-header>
-  <nav class="container nav" aria-label="Main">
+  <nav class="nav" aria-label="Main">
     <a class="brand" href="/" aria-label={`${site.shortName}, home`}>
-      <img src="/favicon.svg" alt="" width="34" height="34" />
+      <img src="/favicon.svg" alt="" width="30" height="30" />
       <span>{site.shortName}</span>
     </a>
 
@@ -36,20 +36,18 @@ const links = [
           </li>
         ))
       }
-      <li class="nav-resume">
-        <a
-          class="btn btn-primary"
-          href={site.resume}
-          target="_blank"
-          rel="noopener"
-          data-resume-open
-          data-goatcounter-click="resume-view"
-          data-goatcounter-title="Resume viewed (nav)">Resume</a
-        >
-      </li>
     </ul>
 
     <div class="nav-actions">
+      <a
+        class="btn btn-primary resume-btn"
+        href={site.resume}
+        target="_blank"
+        rel="noopener"
+        data-resume-open
+        data-goatcounter-click="resume-view"
+        data-goatcounter-title="Resume viewed (nav)">Resume</a
+      >
       <ThemeToggle />
       <button
         class="icon-btn menu-btn"
@@ -84,80 +82,68 @@ const links = [
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') setOpen(false);
   });
-
-  const onScroll = () => header?.classList.toggle('scrolled', window.scrollY > 8);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
 </script>
 
 <style>
   .site-header {
     position: sticky;
-    top: 0;
+    top: 12px;
     z-index: 50;
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease;
-  }
-
-  .site-header.scrolled {
-    border-bottom-color: var(--border);
+    padding-inline: var(--gutter);
+    margin-top: 12px;
   }
 
   .nav {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 16px;
-    height: 68px;
+    gap: 12px;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding: 8px 8px 8px 16px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
   }
 
   .brand {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    color: var(--text);
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     text-decoration: none;
     margin-right: auto;
   }
 
   .brand img {
-    border-radius: 9px;
+    border-radius: 8px;
   }
 
   .nav-links {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
   }
 
-  .nav-links a:not(.btn) {
+  .nav-links a {
     display: block;
-    padding: 6px 10px;
-    border-radius: 8px;
+    padding: 6px 11px;
+    border-radius: 999px;
     color: var(--text-muted);
-    font-size: 0.93rem;
+    font-size: 0.92rem;
     font-weight: 500;
     text-decoration: none;
     transition: color 0.2s ease, background-color 0.2s ease;
   }
 
-  .nav-links a:not(.btn):hover {
+  .nav-links a:hover {
     color: var(--text);
     background: var(--surface-2);
-  }
-
-  .nav-resume {
-    margin-left: 8px;
-  }
-
-  .nav-resume .btn {
-    padding: 7px 16px;
   }
 
   .nav-actions {
@@ -166,10 +152,17 @@ const links = [
     gap: 6px;
   }
 
-  .menu-btn {
-    display: none;
+  .resume-btn {
+    min-height: 40px;
+    padding: 6px 18px;
   }
 
+  .nav-actions :global(.icon-btn) {
+    width: 40px;
+    height: 40px;
+  }
+
+  .menu-btn,
   .icon-close {
     display: none;
   }
@@ -189,15 +182,15 @@ const links = [
 
     .nav-links {
       position: absolute;
-      top: 68px;
+      top: calc(100% + 8px);
       left: 0;
       right: 0;
       flex-direction: column;
       align-items: stretch;
-      gap: 2px;
-      padding: 12px var(--gutter) 20px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
+      padding: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       display: none;
     }
@@ -206,18 +199,16 @@ const links = [
       display: flex;
     }
 
-    .nav-links a:not(.btn) {
-      padding: 10px 12px;
+    .nav-links a {
+      padding: 12px 14px;
       font-size: 1rem;
+      border-radius: var(--radius-sm);
     }
+  }
 
-    .nav-resume {
-      margin: 8px 0 0;
-    }
-
-    .nav-resume .btn {
-      width: 100%;
-      padding: 11px 16px;
+  @media (max-width: 420px) {
+    .brand span {
+      display: none;
     }
   }
 </style>

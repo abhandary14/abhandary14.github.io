@@ -1,91 +1,96 @@
 ---
 import Section from './Section.astro';
+import Icon from './Icon.astro';
 import { experience } from '../data/experience';
 import { emphasize } from '../lib/format';
 
-const tones = ['tone-lavender', 'tone-mint', 'tone-peach', 'tone-sky'];
+const tones = ['tone-orange', 'tone-green', 'tone-pink'];
 ---
 
 <Section id="experience" eyebrow="Experience" title="Where I've worked">
-  <ol class="timeline">
+  <ol class="jobs">
     {
       experience.map((job, index) => (
-        <li class:list={['job', tones[index % tones.length]]} data-reveal>
-          <div class="logo" aria-hidden={job.logo ? undefined : 'true'}>
-            {job.logo ? (
-              <img src={job.logo} alt={`${job.company} logo`} width="56" height="56" loading="lazy" />
-            ) : (
-              <span>{job.company.charAt(0)}</span>
-            )}
+        <li class:list={['tile', 'job', tones[index % tones.length]]} data-reveal>
+          <div class="meta">
+            <div class="logo">
+              {job.logo ? (
+                <img src={job.logo} alt={`${job.company} logo`} width="52" height="52" loading="lazy" />
+              ) : (
+                <span aria-hidden="true">{job.company.charAt(0)}</span>
+              )}
+            </div>
+            <p class="company">
+              {job.companyUrl ? (
+                <a href={job.companyUrl} target="_blank" rel="noopener">
+                  {job.company}
+                </a>
+              ) : (
+                job.company
+              )}
+            </p>
+            <p class="label">{job.dates}</p>
+            <p class="location">{job.location}</p>
           </div>
-          <article class="card job-card">
-            <header>
-              <div>
-                <h3>{job.role}</h3>
-                <p class="company">
-                  {job.companyUrl ? (
-                    <a href={job.companyUrl} target="_blank" rel="noopener">
-                      {job.company}
-                    </a>
-                  ) : (
-                    job.company
-                  )}
-                  <span> · {job.location}</span>
-                </p>
-              </div>
-              <p class="dates">{job.dates}</p>
-            </header>
+          <div class="body">
+            <h3>{job.role}</h3>
             <ul class="bullets">
               {job.bullets.map((bullet) => (
                 <li set:html={emphasize(bullet)} />
               ))}
             </ul>
-          </article>
+            <ul class="chip-list" aria-label="Tech stack">
+              {job.stack.map((item) => (
+                <li class="chip">{item}</li>
+              ))}
+            </ul>
+          </div>
         </li>
       ))
     }
   </ol>
+  <p class="more" data-reveal>
+    <button class="btn btn-ghost" type="button" data-journey-open>
+      See the whole journey, 2020 to today <Icon name="arrow-right" size={16} />
+    </button>
+  </p>
 </Section>
 
 <style>
-  .timeline {
+  .jobs {
     list-style: none;
-    margin: 0;
-    padding: 0;
     display: grid;
-    gap: 24px;
-    position: relative;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 28px;
-    top: 28px;
-    bottom: 28px;
-    width: 2px;
-    background: linear-gradient(var(--lavender), var(--mint), var(--peach));
+    gap: var(--gap);
   }
 
   .job {
     display: grid;
-    grid-template-columns: 56px 1fr;
-    gap: 20px;
-    align-items: start;
+    grid-template-columns: 240px 1fr;
+    gap: clamp(20px, 3vw, 40px);
+  }
+
+  .more {
+    margin-top: var(--gap);
+  }
+
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   .logo {
-    position: relative;
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 14px;
     overflow: hidden;
-    background: var(--surface);
-    border: 3px solid var(--tone);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
     display: grid;
     place-items: center;
-    font-weight: 600;
-    color: var(--tone-ink);
+    font-weight: 700;
+    margin-bottom: 8px;
+    box-shadow: 0 0 0 4px var(--tone);
   }
 
   .logo img {
@@ -94,59 +99,42 @@ const tones = ['tone-lavender', 'tone-mint', 'tone-peach', 'tone-sky'];
     object-fit: cover;
   }
 
-  .job-card {
-    padding: 22px 24px;
+  .company {
+    font-weight: 700;
   }
 
-  .job-card header {
+  .location {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .body {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 4px 16px;
-    margin-bottom: 14px;
+    flex-direction: column;
+    gap: 14px;
   }
 
   h3 {
-    font-size: 1.15rem;
+    font-size: 1.3rem;
   }
 
-  .company {
-    margin-top: 2px;
-    font-weight: 500;
-  }
-
-  .company span {
-    color: var(--text-muted);
-    font-weight: 400;
-  }
-
-  .dates {
-    font-size: 0.9rem;
-    color: var(--tone-ink);
-    background: var(--tone);
-    padding: 2px 10px;
-    border-radius: 999px;
-    height: fit-content;
-    white-space: nowrap;
-  }
-
-  @media (max-width: 600px) {
-    .timeline::before {
-      display: none;
-    }
-
+  @media (max-width: 760px) {
     .job {
       grid-template-columns: 1fr;
-      gap: 10px;
+      gap: 16px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 14px;
+      row-gap: 2px;
+      align-items: center;
     }
 
     .logo {
-      width: 48px;
-      height: 48px;
-    }
-
-    .job-card {
-      padding: 18px;
+      grid-row: span 3;
+      margin-bottom: 0;
     }
   }
 </style>

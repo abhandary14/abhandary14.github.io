@@ -9,6 +9,7 @@ import Publications from '../components/Publications.astro';
 import Skills from '../components/Skills.astro';
 import Blog from '../components/Blog.astro';
 import Contact from '../components/Contact.astro';
+import Journey from '../components/Journey.astro';
 import { getPublishedPosts } from '../lib/blog';
 
 const posts = await getPublishedPosts();
@@ -25,6 +26,7 @@ const showBlog = posts.length > 0;
   <Skills />
   {showBlog && <Blog posts={posts} />}
   <Contact />
+  <Journey />
 </BaseLayout>
 
 <script>
