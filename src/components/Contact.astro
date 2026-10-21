@@ -60,12 +60,72 @@ import { site, services } from '../data/site';
     status.dataset.tone = tone;
   };
 
+  // Client-side spam limits. They stop accidental repeats and simple bots; Web3Forms' own server-side
+  // spam check and the allowed-domain setting are what stop anyone calling its API directly.
+  const MIN_FILL_MS = 3_000; // humans can't fill the form faster than this
+  const COOLDOWN_MS = 60_000; // between two messages
+  const MAX_PER_HOUR = 3;
+  const HISTORY_KEY = 'contact-sent';
+  const loadedAt = Date.now();
+
+  interface Sent {
+    at: number;
+    hash: string;
+  }
+
+  const readHistory = (): Sent[] => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]');
+      return Array.isArray(parsed) ? parsed.filter((item) => Date.now() - item.at < 3_600_000) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const remember = (hash: string) => {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify([...readHistory(), { at: Date.now(), hash }]));
+    } catch {}
+  };
+
+  // Cheap fingerprint of the message so the exact same text can't be sent twice.
+  const fingerprint = (text: string) => {
+    let hash = 0;
+    for (const char of text.trim().toLowerCase()) hash = (hash * 31 + char.charCodeAt(0)) | 0;
+    return String(hash);
+  };
+
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
+    if (submit?.disabled) return;
     if (!form.reportValidity()) return;
 
     const data = new FormData(form);
     const accessKey = form.dataset.accessKey;
+
+    // Bots fill the hidden field or submit instantly: pretend it worked and send nothing.
+    if (data.get('botcheck') || Date.now() - loadedAt < MIN_FILL_MS) {
+      form.reset();
+      setStatus("Thanks! Your message is on its way. I'll reply soon.", 'ok');
+      return;
+    }
+
+    const history = readHistory();
+    const hash = fingerprint(`${data.get('subject')}\n${data.get('message')}`);
+    const last = history.at(-1);
+    if (history.some((item) => item.hash === hash)) {
+      setStatus('Looks like you already sent this message. I’ll get back to you soon.', 'error');
+      return;
+    }
+    if (history.length >= MAX_PER_HOUR) {
+      setStatus('You’ve sent a few messages already. Please wait a while, or email me directly.', 'error');
+      return;
+    }
+    if (last && Date.now() - last.at < COOLDOWN_MS) {
+      const seconds = Math.ceil((COOLDOWN_MS - (Date.now() - last.at)) / 1000);
+      setStatus(`Please wait ${seconds} seconds before sending another message.`, 'error');
+      return;
+    }
 
     // Without a Web3Forms key, fall back to opening the visitor's email app.
     if (!accessKey) {
@@ -88,6 +148,7 @@ import { site, services } from '../data/site';
       });
       const result = await response.json();
       if (!response.ok || !result.success) throw new Error(result.message);
+      remember(hash);
       form.reset();
       setStatus("Thanks! Your message is on its way. I'll reply soon.", 'ok');
     } catch {
@@ -150,6 +211,7 @@ import { site, services } from '../data/site';
     padding: 11px 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
+    corner-shape: squircle;
     min-height: 44px;
     background: var(--bg);
     color: var(--text);

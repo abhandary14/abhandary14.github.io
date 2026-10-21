@@ -18,8 +18,9 @@
   --orange-hover: #e07a0d;
   --on-accent: #000000;
 
-  --radius: 18px;
-  --radius-sm: 10px;
+  --radius: 9px;
+  --radius-sm: 6px;
+  --radius-xs: 4px;
   --max: 1200px;
   --gutter: clamp(16px, 4vw, 32px);
   --gap: clamp(12px, 1.6vw, 16px);
@@ -53,6 +54,17 @@
   --dot: rgb(255 255 255 / 0.11);
   --shadow: 3px 3px 0 rgb(255 255 255 / 0.03);
   --shadow-hover: 5px 5px 0 rgb(255 255 255 / 0.05);
+}
+
+/* Smooth (squircle) corners where supported. A squircle at the same radius looks tighter than a
+   circular corner, so the radii grow to keep the same overall softness. Every element that uses
+   these tokens also sets `corner-shape: squircle`; other browsers keep regular rounded corners. */
+@supports (corner-shape: squircle) {
+  :root {
+    --radius: 15px;
+    --radius-sm: 10px;
+    --radius-xs: 7px;
+  }
 }
 
 /* ---------- Base ---------- */
@@ -175,6 +187,7 @@ strong {
   background: var(--text);
   color: var(--bg);
   border-radius: var(--radius-sm);
+  corner-shape: squircle;
 }
 
 .skip-link:focus {
@@ -201,6 +214,7 @@ strong {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  corner-shape: squircle;
   box-shadow: var(--shadow);
   padding: clamp(20px, 2.4vw, 28px);
   transition: box-shadow 0.25s ease, border-color 0.25s ease;

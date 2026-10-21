@@ -5,6 +5,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // hidden by JS right before they animate in, and nothing runs when the visitor prefers reduced motion.
 gsap.registerPlugin(ScrollTrigger);
 
+// Cap every GSAP animation on the page (including the journey pop-up) at x frames per second.
+// gsap.ticker.fps(165);
+
 const mm = gsap.matchMedia();
 
 mm.add(
